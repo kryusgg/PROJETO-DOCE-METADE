@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Doce Metade</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Estilos específicos para a tela de login do admin */
+        .auth-container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .auth-container input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        .auth-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #c96d88;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: opacity 0.3s;
+        }
+        .auth-container button:hover {
+            opacity: 0.9;
+        }
+        #painel-conteudo {
+            display: none; /* Escondido por padrão até o login */
+        }
+        .admin-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .admin-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .admin-container label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        .admin-container input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .btn-salvar {
+            background-color: #25d366;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-sair {
+            background-color: #ea1d2c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            float: right;
+            margin-bottom: 20px;
+        }
+        #mensagem-status {
+            text-align: center;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="logo-titulo">Doce Metade</h1>
+        <nav>
+            <a href="index.html">Ver Cardápio</a>
+        </nav>
+    </header>
+
+    <!-- TELA DE LOGIN -->
+    <div id="tela-login" class="auth-container">
+        <h2>Área Restrita</h2>
+        <p style="font-size: 0.9rem; color: #666;">Faça login para gerenciar os produtos.</p>
+        <input type="email" id="email-login" placeholder="Seu e-mail de acesso">
+        <input type="password" id="senha-login" placeholder="Sua senha">
+        <button onclick="fazerLogin()">Entrar no Painel</button>
+        <p id="erro-login" style="color: #ea1d2c; font-size: 0.85rem; margin-top: 10px;"></p>
+    </div>
+
+    <!-- PAINEL ADMINISTRATIVO (Protegido) -->
+    <div id="painel-conteudo">
+        <div class="admin-container">
+            <button class="btn-sair" onclick="fazerLogout()">Sair</button>
+            <h2 style="color: #c96d88; margin-top: 0;">Adicionar Novo Produto</h2>
+            
+            <form id="form-produto">
+                <label for="nome">Nome do Doce:</label>
+                <input type="text" id="nome" required placeholder="Ex: Bolo de Ninho com Morango">
+
+                <label for="preco">Preço (R$):</label>
+                <input type="number" step="0.01" id="preco" required placeholder="Ex: 15.00">
+
+                <label for="link_ifood">Link do iFood (Opcional):</label>
+                <input type="url" id="link_ifood" placeholder="Cole o link do iFood aqui">
+
+                <label for="foto">Foto do Produto:</label>
+                <input type="file" id="foto" accept="image/*" required>
+
+                <button type="submit" class="btn-salvar">Cadastrar Produto</button>
+            </form>
+            <p id="mensagem-status"></p>
+        </div>
+    </div>
+
+    <script>
+        // Conexão com o Supabase
+        const supabaseUrl = 'https://ficofmzyrseclfxztryd.supabase.co';
+        const supabaseKey = 'sb_publishable_KChoVZVWuvptZfjTxGII-w_xisqPTWU';
+        const clienteSupabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Verifica se já existe uma sessão ativa ao carregar a página
+        async function verificarSessao() {
+            const { data: { session } } = await clienteSupabase.auth.getSession();
+            if (session) {
+                liberarPainel();
+            }
+        }
+
+        async function fazerLogin() {
+            const email = document.getElementById('email-login').value;
+            const senha = document.getElementById('senha-login').value;
+            const erroEl = document.getElementById('erro-login');
+
+            erroEl.textContent = "Entrando...";
+
+            const { data, error } = await clienteSupabase.auth.signInWithPassword({
+                email: email,
+                password: senha,
+            });
+
+            if (error) {
+                erroEl.textContent = "E-mail ou senha incorretos.";
+            } else {
+                liberarPainel();
+            }
+        }
+
+        async function fazerLogout() {
+            await clienteSupabase.auth.signOut();
+            document.getElementById('painel-conteudo').style.display = 'none';
+            document.getElementById('tela-login').style.display = 'block';
+            document.getElementById('email-login').value = '';
+            document.getElementById('senha-login').value = '';
+        }
+
+        function liberarPainel() {
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('painel-conteudo').style.display = 'block';
+        }
+
+        // Executa a verificação ao abrir a página
+        verificarSessao();
+
+        // Envio do formulário de cadastro de produtos
+        const form = document.getElementById('form-produto');
+        const statusEl = document.getElementById('mensagem-status');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            statusEl.textContent = "Cadastrando produto...";
+            statusEl.style.color = "#333";
+
+            const nome = document.getElementById('nome').value;
+            const preco = document.getElementById('preco').value;
+            const link_ifood = document.getElementById('link_ifood').value;
+            const arquivoFoto = document.getElementById('foto').files[0];
+
+            let urlPublica = '';
+
+            if (arquivoFoto) {
+                const nomeArquivo = `${Date.now()}_${arquivoFoto.name}`;
+                const { data: uploadData, error: uploadError } = await clienteSupabase.storage
+                    .from('imagens-produtos')
+                    .upload(nomeArquivo, arquivoFoto);
+
+                if (uploadError) {
+                    statusEl.textContent = "Erro ao enviar a imagem: " + uploadError.message;
+                    statusEl.style.color = "#ea1d2c";
+                    return;
+                }
+
+                const { data: urlData } = clienteSupabase.storage
+                    .from('imagens-produtos')
+                    .getPublicUrl(nomeArquivo);
+                
+                urlPublica = urlData.publicUrl;
+            }
+
+            // Insere no banco de dados incluindo a imagem em formato de lista/array
+            const { error: insertError } = await clienteSupabase
+                .from('produtos')
+                .insert([{ 
+                    nome: nome, 
+                    preco: parseFloat(preco), 
+                    link_ifood: link_ifood || '#',
+                    imagens: [urlPublica] 
+                }]);
+
+            if (insertError) {
+                statusEl.textContent = "Erro ao salvar no banco: " + insertError.message;
+                statusEl.style.color = "#ea1d2c";
+            } else {
+                statusEl.textContent = "Produto cadastrado com sucesso!";
+                statusEl.style.color = "#25d366";
+                form.reset();
+            }
+        });
+    </script>
+</body>
+</html>
