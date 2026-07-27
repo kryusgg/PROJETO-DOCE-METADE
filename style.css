@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Importação das fontes direto do Google */
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&display=swap');
 
@@ -182,4 +183,190 @@ section {
 
 .btn-whatsapp {
     background-color: #25d366;
+=======
+/* Importação das fontes direto do Google */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600;700&display=swap');
+
+/* Limpa qualquer estilo padrão indesejado */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fdf0f4;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- ESTILOS DO CABEÇALHO (LOGO E MENU) --- */
+header {
+    background-color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* --- Estilo do Título no Topo (Substituindo a Logo) --- */
+.logo-titulo {
+    font-family: 'Dancing Script', cursive;
+    color: #c96d88;
+    font-size: 2.8rem;
+    margin: 0;
+    text-align: center;
+}
+
+header nav {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+header nav a {
+    text-decoration: none;
+    color: #75c9c8; 
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: 'Poppins', sans-serif; 
+    transition: color 0.3s;
+}
+
+header nav a:hover {
+    color: #c96d88;
+}
+
+/* --- ESTILOS DA SEÇÃO DO CARDÁPIO --- */
+section {
+    padding: 40px 20px;
+    flex: 1;
+}
+
+.titulo-secao {
+    text-align: center;
+    color: #c96d88;
+    font-family: 'Dancing Script', cursive;
+    font-size: 3rem;
+    margin-bottom: 30px;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.titulo-secao::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background-color: #fbd6ac;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+/* --- Container da vitrine --- */
+.vitrine {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* --- Formato do Card (Tamanho Fixo e Simétrico) --- */
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    width: 260px;
+    height: 410px; /* Altura exata sem a descrição */
+    box-sizing: border-box;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* --- Imagem no topo --- */
+.imagem-produto {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+/* --- Informações do produto --- */
+.info-produto {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1;
+}
+
+.titulo-produto {
+    font-size: 1.05rem;
+    margin: 0 0 5px 0;
+    color: #000;
+    font-weight: 700;
+    height: 2.5rem; /* Garante que todos os títulos tenham o mesmo espaço reservado (equivalente a 2 linhas) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Preço destacado em vermelho */
+.preco {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #ff3333;
+    margin: 5px 0;
+}
+
+/* --- Botões empilhados alinhados na base --- */
+.botoes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    margin-top: auto;
+}
+
+.btn {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    box-sizing: border-box;
+    transition: opacity 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn-ifood {
+    background-color: #ea1d2c;
+}
+
+.btn-whatsapp {
+    background-color: #25d366;
+>>>>>>> 91a5d2f6455736bff0b216b914fbade147568366
 }

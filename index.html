@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -84,4 +85,92 @@
         carregarProdutos();
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doce Metade - Vitrine</title>
+    <link rel="stylesheet" href="style.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+   <header>
+    <h1 class="logo-titulo">Doce Metade</h1>
+    <nav>
+        <a href="index.html">Nossos Produtos</a>
+        <a href="informacoes.html">Encomendas e Prazos</a>
+        <a href="sobre.html">Nossa História</a>
+    </nav>
+</header>
+
+    <section>
+        <h2 class="titulo-secao">Nosso Cardápio</h2>
+        <div class="vitrine"></div>
+    </section>
+
+    <script>
+        // Conexão com o Supabase
+        const supabaseUrl = 'https://ficofmzyrseclfxztryd.supabase.co';
+        const supabaseKey = 'sb_publishable_KChoVZVWuvptZfjTxGII-w_xisqPTWU';
+        const clienteSupabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function carregarProdutos() {
+            const { data: produtos, error } = await clienteSupabase
+                .from('produtos')
+                .select('*');
+
+            if (error) {
+                console.error("Erro ao buscar os produtos:", error);
+                return; 
+            }
+
+            const vitrine = document.querySelector('.vitrine');
+            vitrine.innerHTML = ''; 
+
+            produtos.forEach(produto => {
+                // Formata o preço para R$ 00,00
+                const precoFormatado = Number(produto.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                
+                // Mensagem personalizada do WhatsApp
+                const textoZap = encodeURIComponent(`Olá! Estava no site e gostaria de pedir o *${produto.nome}*.`);
+                const linkZap = `https://wa.me/5547992434348?text=${textoZap}`;
+
+                // Verifica se tem link do iFood
+                let botaoIfood = '';
+                if (produto.link_ifood && produto.link_ifood !== '#') {
+                    botaoIfood = `<a href="${produto.link_ifood}" target="_blank" class="btn btn-ifood">Pedir no iFood</a>`;
+                }
+
+                // Imagem de capa segura
+                const listaDeImagens = produto.imagens || []; 
+                const imagemCapa = listaDeImagens.length > 0 
+                    ? listaDeImagens[0] 
+                    : 'https://via.placeholder.com/150?text=Sem+Foto';
+
+                // Estrutura do card sem descrição e perfeitamente simétrica
+                const cardHTML = `
+                    <div class="card">
+                        <img src="${imagemCapa}" alt="${produto.nome}" class="imagem-produto">
+                        <div class="info-produto">
+                            <h3 class="titulo-produto">${produto.nome}</h3>
+                            <div class="preco">${precoFormatado}</div>
+                            <div class="botoes">
+                                ${botaoIfood}
+                                <a href="${linkZap}" target="_blank" class="btn btn-whatsapp">WhatsApp</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                vitrine.innerHTML += cardHTML;
+            });
+        }
+
+        carregarProdutos();
+    </script>
+</body>
+>>>>>>> 91a5d2f6455736bff0b216b914fbade147568366
 </html>
